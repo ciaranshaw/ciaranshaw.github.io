@@ -1,5 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ciaran - Food.</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <script>
       const url = 'https://ciaranshaw.my.canva.site';
       const limit = 20;
@@ -17,12 +23,13 @@
       const createLink = async (response, index) => {
         const text = await response.text();
         const parsed = (new window.DOMParser()).parseFromString(text, "text/html");
-        console.log(response, index);
-        
-        const link = document.createElement('a');
-        link.innerText = parsed.title;
-        link.href = `${url}/${index}`;
-        document.body.append(link);
+
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.innerText = parsed.title;
+        a.href = `${url}/${index}`;
+        li.appendChild(a);
+        document.getElementById('articles').append(li);
       }
 
       Promise
@@ -31,11 +38,27 @@
           responses
             .filter(({ response }) => response.ok)
             .forEach(({ response, index }) => createLink(response, index))
-        );
+        ).finally(() => {
+          document.getElementById('loading-indicator').remove();
+        });
     </script>
+    <style>
+      * {
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      main {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+    </style>
   </head>
   <body>
-    <h1>My Food Thoughts</h1>
-    <h3>Articles</h3>
+    <main>
+        <h1>Some thoughts on things I've eaten</h1>
+        <p id="loading-indicator">Loading...</p>
+        <ul id="articles"></ul>
+    </main>
   </body>
 </html>
