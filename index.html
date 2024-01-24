@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script>
+      const url = 'https://ciaranshaw.my.canva.site';
+      const limit = 20;
+
+      const promises = new Array(20)
+        .fill(undefined)
+        .map((_, index) => 
+          new Promise((res, err) => {
+            fetch(`${url}/${index}`)
+              .then(response => res({ response, index }))
+              .catch(err);
+          })
+        );
+
+      const createLink = async (response, index) => {
+        const text = await response.text();
+        const parsed = (new window.DOMParser()).parseFromString(text, "text/html");
+        console.log(response, index);
+        
+        const link = document.createElement('a');
+        link.innerText = parsed.title;
+        link.href = `${url}/${index}`;
+        document.body.append(link);
+      }
+
+      Promise
+        .all(promises)
+        .then(responses =>
+          responses
+            .filter(({ response }) => response.ok)
+            .forEach(({ response, index }) => createLink(response, index))
+        );
+    </script>
+  </head>
+  <body>
+    <h1>My Food Thoughts</h1>
+    <h3>Articles</h3>
+  </body>
+</html>
