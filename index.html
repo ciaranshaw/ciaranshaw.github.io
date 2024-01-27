@@ -7,18 +7,31 @@
     <title>Ciaran - Food.</title>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <script>
-      const url = 'https://ciaranshaw.my.canva.site';
+      const url = 'https://blog.ciaranfood.com';
       const limit = 20;
 
-      const promises = new Array(20)
-        .fill(undefined)
-        .map((_, index) => 
-          new Promise((res, err) => {
-            fetch(`${url}/${index}`)
-              .then(response => res({ response, index }))
-              .catch(err);
-          })
+      const fetchBlogs = async (start = 0, responses = []) => {
+        const promises = await Promise.all(
+          new Array(limit)
+            .fill(undefined)
+            .map((_, index) =>
+              new Promise((res, error) => {
+                fetch(`${url}/${start + index}`)
+                  .then(response => {
+                    res({ response, index });
+                  })
+              })
+            )
         );
+
+        console.log(promises)
+
+        if (promises[limit - 1].response.ok) {
+          return fetchBlogs(start + limit, [...responses, ...promises]);
+        } else {
+          return [...responses, ...promises];
+        }
+      }
 
       const createLink = async (response, index) => {
         const text = await response.text();
@@ -32,8 +45,7 @@
         document.getElementById('articles').append(li);
       }
 
-      Promise
-        .all(promises)
+      fetchBlogs()
         .then(responses =>
           responses
             .filter(({ response }) => response.ok)
