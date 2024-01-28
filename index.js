@@ -5,7 +5,7 @@ const { JSDOM } = jsdom;
 
 const app = express();
 
-const ports = [80, 443];
+const ports = [80, 443, 10000];
 const limit = 20;
 const url = 'https://blog.ciaranfood.com';
 
