@@ -5,7 +5,7 @@ const { JSDOM } = jsdom;
 
 const app = express();
 
-const ports = [80, 443, 10000];
+const ports = [10000];
 const limit = 20;
 const url = 'https://blog.ciaranfood.com';
 
@@ -43,7 +43,7 @@ app.set('view engine', 'html');
 app.engine('html', hbs.__express);
 hbs.registerHelper('list', function (items, options) {        
   const itemsAsHtml = items.map(item => 
-    `<li><a href="${url}/${item.index}">${item.title}</li>`
+    `<li><a href="${item.url}">${item.title}</li>`
   );
   return `<ul>` + itemsAsHtml.join("\n") + "</ul>";
 });
