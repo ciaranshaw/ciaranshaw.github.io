@@ -5,7 +5,7 @@ const { JSDOM } = jsdom;
 
 const app = express();
 
-const port = 3000;
+const ports = [80, 443];
 const limit = 20;
 const url = 'https://blog.ciaranfood.com';
 
@@ -54,6 +54,8 @@ app.get('*', async (req, res) => {
   res.render(__dirname + '/index.hbs', { blogs: responses });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+ports.map(port =>
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  })
+);
